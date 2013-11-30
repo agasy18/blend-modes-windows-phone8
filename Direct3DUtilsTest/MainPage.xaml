@@ -1,0 +1,30 @@
+﻿<phone:PhoneApplicationPage 
+    x:Class="Direct3DUtilsTest.MainPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:phone="clr-namespace:Microsoft.Phone.Controls;assembly=Microsoft.Phone"
+    xmlns:shell="clr-namespace:Microsoft.Phone.Shell;assembly=Microsoft.Phone"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    FontFamily="{StaticResource PhoneFontFamilyNormal}"
+    FontSize="{StaticResource PhoneFontSizeNormal}"
+    Foreground="{StaticResource PhoneForegroundBrush}"
+    SupportedOrientations="Portrait" Orientation="Portrait"
+    shell:SystemTray.IsVisible="false">
+
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <Grid x:Name="LayoutRoot">
+
+        <DrawingSurfaceBackgroundGrid x:Name="DrawingSurfaceBackground" Loaded="DrawingSurfaceBackground_Loaded"  />
+        <Image Name="sImage" VerticalAlignment="Bottom" HorizontalAlignment="Right" Height="100" Width="100"></Image>
+        <Grid VerticalAlignment="Top" Canvas.ZIndex="100">
+            <Button Content="Add" HorizontalAlignment="Left" VerticalAlignment="Top" Click="CreateSprite_act"/>
+            <Button Content="Move" HorizontalAlignment="Left" VerticalAlignment="Top" RenderTransformOrigin="-1.276,0.604" Click="Move_act" Margin="98,0,0,0"/>
+            <Button Content="BlendTex" HorizontalAlignment="Left" Margin="326,0,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.276,0.604" Click="blend_res_act"/>
+            <Button Content="Texture" HorizontalAlignment="Left" Margin="195,0,0,0" VerticalAlignment="Top" RenderTransformOrigin="-1.276,0.604" Click="setMainTex"/>
+            <Button Content="save" HorizontalAlignment="Left" Margin="-2,72,0,-72" VerticalAlignment="Top" RenderTransformOrigin="-1.276,0.604" Click="saveAction"/>
+        </Grid>
+    </Grid>
+
+</phone:PhoneApplicationPage>
