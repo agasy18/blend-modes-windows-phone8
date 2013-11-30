@@ -83,7 +83,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Debug\DebugHelper.cs" />
+    <Compile Include="DebugHelper.cs" />
     <Compile Include="DirectXMenager.cs" />
     <Compile Include="Ext.cs" />
     <Compile Include="FrameworkElementExtensions.cs" />
