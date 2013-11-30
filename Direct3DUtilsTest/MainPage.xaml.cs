@@ -24,38 +24,6 @@ namespace Direct3DUtilsTest
         public MainPage()
         {
             InitializeComponent();
-            ManipulationDelta += MainPage_ManipulationDelta;
-            StreamResourceInfo resourceInfo = Application.GetResourceStream(new Uri("Assets/tux.png", UriKind.Relative));
-            bitmap = new BitmapImage();
-
-            bitmap.SetSource(resourceInfo.Stream);
-            dxManager.Interop.ConnectEvent += Interop_ConnectEvent;
-        }
-
-        void Interop_ConnectEvent()
-        {
-            if (s != null)
-            {
-                setMainTex(null, null);
-            }
-        }
-
-        void MainPage_ManipulationDelta(object sender, System.Windows.Input.ManipulationDeltaEventArgs e)
-        {
-        }
-        private void DrawingSurfaceBackground_Loaded(object sender, RoutedEventArgs e)
-        {
-            dxManager.Load(DrawingSurfaceBackground);
-            CreateSprite_act(null, null);
-
-            setMainTex(null, null);
-            s.Width = 1000;
-            s.Height = 1000;
-            CreateSprite_act(null, null);
-            setMainTex(null, null);
-            s.Width = 500;
-            s.Height = 500;
-            s.Alpha = 0.5f;
         }
 
         Sprite s;
@@ -83,57 +51,77 @@ namespace Direct3DUtilsTest
             s.Blendmode = BlendMode.Screen;
             s.Fillmode = FillMode.Fill;
             s.ColorFill = Color.FromArgb(255, 10, 5, 255);
-
-
-
         }
         private void blend_res_act(object sender, RoutedEventArgs e)
         {
 
         }
-        private void setMainTex(object sender, RoutedEventArgs e)
-        {
+       
 
-            s.SetMainTexture(bitmap);
-
-            //var v = new WriteableBitmap(sender as UIElement, null);
-            //s.setMainTex(v);
-
-
-            //Microsoft.Phone.Tasks.PhotoChooserTask tk = new Microsoft.Phone.Tasks.PhotoChooserTask();
-            //tk.ShowCamera = true;
-            //tk.Completed += tk_Completed;
-            //tk.Show();
-        }
         void tk_Completed(object sender, Microsoft.Phone.Tasks.PhotoResult e)
         {
             BitmapImage bitmap = new BitmapImage();
             bitmap.SetSource(e.ChosenPhoto);
             s.SetMainTexture(bitmap);
         }
-        public void Save(BitmapSource bmp)
+        
+        void SaveToMediaLibrary(BitmapSource bmp)
         {
-            // stream = new MemoryStream(Wbmp.PixelWidth * Wbmp.PixelHeight * 4);
-            WriteableBitmap Wbmp = bmp as WriteableBitmap;
-            if (Wbmp == null)
-            {
-                Wbmp = new WriteableBitmap(bmp);
-            }
-            MemoryStream stream = new MemoryStream(Wbmp.PixelWidth * Wbmp.PixelHeight);
+            WriteableBitmap Wbmp = (bmp as WriteableBitmap)??new WriteableBitmap(bmp);
+            MemoryStream stream = new MemoryStream();
             Wbmp.SaveJpeg(stream, Wbmp.PixelWidth, Wbmp.PixelHeight, 0, 100);
             MediaLibrary library = new MediaLibrary();
-            library.SavePicture("PicsArt_" + DateTime.Now.ToString(), stream.GetBuffer());
-            MessageBox.Show("picture saved in gallery");
+            library.SavePicture("BlendModes_" + DateTime.Now.ToString(), stream.GetBuffer());
+            MessageBox.Show("Picture saved in gallery");
         }
 
-        public BitmapImage bitmap { get; set; }
-
-
-
-        private void saveAction(object sender, RoutedEventArgs e)
+        WriteableBitmap GetBitmap()
         {
+            var h = Application.Current.Host.Content.ActualHeight;
+            var w = Application.Current.Host.Content.ActualWidth;
             float s = Application.Current.Host.Content.ScaleFactor / 100.0f;
-            sImage.Source = dxManager.SaveToBitmap(500, 500, 0, 100, (int)(500 / s), (int)(500 / s));
+            return dxManager.SaveToBitmap((int)(s * w), (int)(s * h), 0, 0,(int) w,(int) h);
+        }
+
+
+        Sprite CurrentSprite;
+
+        private void ApplicationBarIconButton_Add(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ApplicationBarIconButton_Delete(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ApplicationBarIconButton_Save(object sender, EventArgs e)
+        {
+
+        }
+
+        private void ApplicationBarMenuItem_Texture(object sender, EventArgs e)
+        {
+            switch ((sender as ApplicationBarMenuItem).Text)
+	        {
+                case "main texture":
+                    break;
+                case "blend texture":
+                    break;
+                case "mask texture":
+                    break;
+	        }
+        }
+
+        private void ApplicationBarMenuItem_BlendMode(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void ApplicationBarMenuItem_Color(object sender, EventArgs e)
+        {
+
         }
     }
 }

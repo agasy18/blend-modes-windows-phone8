@@ -53,7 +53,7 @@ namespace Direct3DUtils
         PlusLighter = 28,
 
     };
-    //Tigran
+
     public enum FillMode
     {
         None = -1,
@@ -62,7 +62,6 @@ namespace Direct3DUtils
 
     }
 
-    //
     public partial class Sprite : UserControl, IDisposable
     {
         public CompositeTransform CT { get { return RenderTransform as CompositeTransform; } }
@@ -226,14 +225,6 @@ namespace Direct3DUtils
                 h = Height * w / Width;
             }
 
-
-
-            //var gt=TransformToVisual(Parent as FrameworkElement);
-            //var start = gt.Transform(new Point());
-            //p = gt.Transform(p);
-            //CT.TranslateX += (p.X - start.X)/2;
-            //CT.TranslateY -= (p.Y - start.Y)/2;
-
             if (w < 0)
             {
                 CT.ScaleX *= -1;
@@ -269,7 +260,6 @@ namespace Direct3DUtils
                 m_d3dInterop.SprieSetBlendMode(id, (int)blendmode);
             }
         }
-        //Tigran
         private FillMode fillmode;
         public FillMode Fillmode
         {
@@ -291,8 +281,6 @@ namespace Direct3DUtils
                 m_d3dInterop.SetFillColor(id,(float)colorFill.R / 255, (float)colorFill.G / 255, (float)colorFill.B / 255, (float)colorFill.A / 255);
             }
         }
-
-        //
 
         public void BringToFront()
         {
@@ -347,7 +335,7 @@ namespace Direct3DUtils
             SetImage(bmp, SpriteTextureType.Mask);
         }
 
-        private void SetImage(WriteableBitmap bmp, SpriteTextureType type)
+        public void SetImage(WriteableBitmap bmp, SpriteTextureType type)
         {
             ObjectMonitorExt.AddToObjectMonitor(bmp, ObjectMonitor.DefaultCategories.Bitmap);
             if (DXMenager.EnableRestoring)

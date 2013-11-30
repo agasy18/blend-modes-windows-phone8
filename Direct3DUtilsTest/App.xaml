@@ -7,6 +7,7 @@
 
     <!--Application Resources-->
     <Application.Resources>
+        <SolidColorBrush x:Key="DialogBrush" Color="#4C000000"/>
         <local:LocalizedStrings xmlns:local="clr-namespace:Direct3DUtilsTest" x:Key="LocalizedStrings"/>
     </Application.Resources>
 

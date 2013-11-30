@@ -83,20 +83,20 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="DebugHelper.cs" />
-    <Compile Include="DirectXMenager.cs" />
-    <Compile Include="Ext.cs" />
-    <Compile Include="FrameworkElementExtensions.cs" />
-    <Compile Include="ObjectMonitor.cs" />
+    <Compile Include="Helpers\DebugHelper.cs" />
+    <Compile Include="Helpers\DirectXMenager.cs" />
+    <Compile Include="Helpers\Ext.cs" />
+    <Compile Include="Helpers\FrameworkElementExtensions.cs" />
+    <Compile Include="Helpers\ObjectMonitor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Reference.cs" />
-    <Compile Include="ReferenceList.cs" />
-    <Compile Include="Resizer.cs" />
+    <Compile Include="Helpers\Reference.cs" />
+    <Compile Include="Helpers\ReferenceList.cs" />
+    <Compile Include="Helpers\Resizer.cs" />
     <Compile Include="Sprite.xaml.cs">
       <DependentUpon>Sprite.xaml</DependentUpon>
     </Compile>
     <Compile Include="SpriteFileMenager.cs" />
-    <Compile Include="WritableBitmapBinSave.cs" />
+    <Compile Include="Helpers\WritableBitmapBinSave.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Direct3DUtilsComp\Direct3DUtilsComp.vcxproj">
