@@ -84,7 +84,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Helpers\DebugHelper.cs" />
-    <Compile Include="Helpers\DirectXMenager.cs" />
+    <Compile Include="DirectXMenager.cs" />
     <Compile Include="Helpers\Ext.cs" />
     <Compile Include="Helpers\FrameworkElementExtensions.cs" />
     <Compile Include="Helpers\ObjectMonitor.cs" />

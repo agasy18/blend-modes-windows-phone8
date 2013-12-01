@@ -347,6 +347,10 @@ namespace Direct3DUtils
 
         private void SetTexture(WriteableBitmap bmp, SpriteTextureType type)
         {
+            if (bmp == null )
+            {
+                return;
+            }
             switch (type)
             {
 

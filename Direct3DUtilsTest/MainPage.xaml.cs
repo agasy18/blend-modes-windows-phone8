@@ -14,56 +14,22 @@ using System.Threading;
 using Microsoft.Xna.Framework.Media;
 using System.Windows.Media;
 using Direct3DUtils;
+using System.Threading.Tasks;
+using Microsoft.Phone.Tasks;
 
 namespace Direct3DUtilsTest
 {
     public partial class MainPage : PhoneApplicationPage
     {
-        DirectXMenager dxManager = new DirectXMenager();
+        DirectXMenager dxManager = new DirectXMenager() {EnableRestoring = true};
         
         public MainPage()
         {
             InitializeComponent();
         }
 
-        Sprite s;
-        private void CreateSprite_act(object sender, RoutedEventArgs e)
-        {
-            if (s != null)
-                s.Activate = false;
-            s = dxManager.CreateSprite(false);
-            Canvas.SetZIndex(s, zindex);
-            DrawingSurfaceBackground.Children.Add(s);
-            s.Tap += s_Tap;
-        }
-        int zindex = 0;
-        void s_Tap(object sender, System.Windows.Input.GestureEventArgs e)
-        {
-            s.Activate = false;
-            s = sender as Sprite;
-            s.Activate = true;
-            Canvas.SetZIndex(s, ++zindex);
-            s.SetTransform();
-        }
-        int i = 0;
-        private void Move_act(object sender, RoutedEventArgs e)
-        {
-            s.Blendmode = BlendMode.Screen;
-            s.Fillmode = FillMode.Fill;
-            s.ColorFill = Color.FromArgb(255, 10, 5, 255);
-        }
-        private void blend_res_act(object sender, RoutedEventArgs e)
-        {
-
-        }
+        int canvasZIndex = 0;
        
-
-        void tk_Completed(object sender, Microsoft.Phone.Tasks.PhotoResult e)
-        {
-            BitmapImage bitmap = new BitmapImage();
-            bitmap.SetSource(e.ChosenPhoto);
-            s.SetMainTexture(bitmap);
-        }
         
         void SaveToMediaLibrary(BitmapSource bmp)
         {
@@ -86,19 +52,89 @@ namespace Direct3DUtilsTest
 
         Sprite CurrentSprite;
 
-        private void ApplicationBarIconButton_Add(object sender, EventArgs e)
+        Task<WriteableBitmap> ChoosePhoto() 
+        {
+            TaskCompletionSource<WriteableBitmap> tSource = new TaskCompletionSource<WriteableBitmap>();
+             var photoChooserTask = new PhotoChooserTask();
+             photoChooserTask.Completed += (s, e) =>
+             {
+                 if (e.TaskResult == TaskResult.OK)
+                 {
+                     BitmapImage img = new BitmapImage();
+                     img.SetSource(e.ChosenPhoto);
+                     tSource.TrySetResult(new WriteableBitmap(img));
+                 }
+                 else
+                 {
+                     tSource.TrySetResult(null);
+                 }
+             };
+             photoChooserTask.ShowCamera = true;
+             photoChooserTask.Show();
+            return tSource.Task;
+        }
+
+        async Task<WriteableBitmap> ChoosePhotoAndInteropIsLoaded()
+        {
+            var t = ChoosePhoto();
+            await this.InvokeAsync();
+            await dxManager.AllTaskes;
+            return await t;
+        }
+
+        private async void ApplicationBarIconButton_Add(object sender, EventArgs e)
         {
 
+
+           var img = await ChoosePhotoAndInteropIsLoaded();
+           if (img!=null)
+           {
+               if (CurrentSprite!=null)
+               {
+                   CurrentSprite.Activate = false;
+               }
+               var sprite = dxManager.CreateSprite();
+               sprite.Loaded+=(s,es)=>sprite.SetMainTexture(img);
+               ApplyAspectRatio(sprite, img);
+               Canvas.SetZIndex(sprite, ++canvasZIndex);
+               DrawingSurfaceBackground.Children.Add(sprite);
+               sprite.Tap += CurrentSprite_Tap;
+               CurrentSprite = sprite;
+           }
+        }
+
+        private void ApplyAspectRatio(Sprite CurrentSprite, WriteableBitmap img)
+        {
+            const float spriteSize = 200;
+            float s = Math.Min(spriteSize / img.PixelWidth,spriteSize / img.PixelHeight);
+            CurrentSprite.Width = s * img.PixelWidth;
+            CurrentSprite.Height = s * img.PixelHeight;
+        }
+
+        void CurrentSprite_Tap(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+            if (e.Handled)
+            {
+                return;
+            }
+            if (CurrentSprite != null)
+            {
+                CurrentSprite.Activate = false;
+            }
+            CurrentSprite = sender as Sprite;
+            CurrentSprite.Activate = true;
+            Canvas.SetZIndex(CurrentSprite, ++canvasZIndex);
+            CurrentSprite.BringToFront();
         }
 
         private void ApplicationBarIconButton_Delete(object sender, EventArgs e)
         {
-
+           
         }
 
         private void ApplicationBarIconButton_Save(object sender, EventArgs e)
         {
-
+            SaveToMediaLibrary(GetBitmap());
         }
 
         private void ApplicationBarMenuItem_Texture(object sender, EventArgs e)
@@ -122,6 +158,16 @@ namespace Direct3DUtilsTest
         private void ApplicationBarMenuItem_Color(object sender, EventArgs e)
         {
 
+        }
+
+        private void LayoutRoot_Tap_1(object sender, System.Windows.Input.GestureEventArgs e)
+        {
+
+        }
+
+        private void DrawingSurfaceBackground_Loaded_1(object sender, RoutedEventArgs e)
+        {
+            dxManager.Load(DrawingSurfaceBackground);
         }
     }
 }

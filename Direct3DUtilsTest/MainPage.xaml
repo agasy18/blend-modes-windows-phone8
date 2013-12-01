@@ -28,16 +28,9 @@
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
 
-    <!--LayoutRoot is the root grid where all page content is placed--><DrawingSurfaceBackgroundGrid x:Name="DrawingSurfaceBackground"   >
-    <Grid x:Name="LayoutRoot" Tap="LayoutRoot_Tap_1">
-            <Grid.Background>
-                <RadialGradientBrush>
-                    <GradientStop Color="#FF140AE6" Offset="0"/>
-                    <GradientStop Color="#FFB82424" Offset="1"/>
-                    <GradientStop Color="#FF009931" Offset="0.503"/>
-                    <GradientStop Color="#FF426E2C" Offset="0.735"/>
-                </RadialGradientBrush>
-            </Grid.Background>
+    <!--LayoutRoot is the root grid where all page content is placed--><DrawingSurfaceBackgroundGrid x:Name="DrawingSurfaceBackground"   Loaded="DrawingSurfaceBackground_Loaded_1" Tap="LayoutRoot_Tap_1">
+    <Grid x:Name="LayoutRoot">
+           
 
             <local:BlendModeChooser x:Name="blendChooser" HorizontalAlignment="Left" Height="409" VerticalAlignment="Top" Width="256"/>
         

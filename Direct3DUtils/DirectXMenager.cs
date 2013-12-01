@@ -18,21 +18,30 @@ namespace Direct3DUtils
     {
         public DirectXMenager()
         {
-            
             Interop = new Direct3DInterop();
             Interop.AddToObjectMonitor("Interop");
             Interop.ConnectEvent += m_d3dInterop_ConnectEvent;
             Interop.DisconnectEvent += m_d3dInterop_DisconnectEvent;
         }
 
+        TaskCompletionSource<object> interopIsLoadedTaskSource;
+        TaskCompletionSource<object> InteropIsLoadedTaskSource
+        {
+            get { return interopIsLoadedTaskSource ?? (interopIsLoadedTaskSource = new TaskCompletionSource<object>()); }
+            set { interopIsLoadedTaskSource = value; }
+        }
+        public Task InteropIsLoaded { get { return InteropIsLoadedTaskSource.Task; } }
+
         public bool EnableRestoring { get; set; }
         void m_d3dInterop_DisconnectEvent()
         {
+            InteropIsLoadedTaskSource = null;
             this.Log("Disconnected");
         }
 
         private void m_d3dInterop_ConnectEvent()
         {
+            InteropIsLoadedTaskSource.TrySetResult(null);
             if (EnableRestoring)
             {
                 RestoreTextures();
@@ -111,14 +120,54 @@ namespace Direct3DUtils
 
         public async void RestoreTextures()
         {
-            if (EnableRestoring)
+            TaskCompletionSource<object> ts = new TaskCompletionSource<object>();
+            AddTask(ts.Task);
+            try
             {
-                foreach (var item in sprites)
+                if (EnableRestoring)
                 {
-                    await item.RestoreTextures();
+                    foreach (var item in sprites)
+                    {
+                        await item.RestoreTextures();
+                    }
+                }
+            }
+            finally
+            {
+                ts.TrySetResult(null);
+            }
+        }
+
+#region TaskManeger
+
+        
+        HashSet<Task> allTaskes = new HashSet<Task>();
+        public Task AllTaskes { get { return Task.WhenAll(InteropIsLoaded, Task.WhenAll(allTaskes)); } }
+        private async void AddTask(Task<object> task)
+        {
+          
+            allTaskes.Add(task);
+            if (TaskAdded != null)
+            {
+                TaskAdded(this, null);
+            }
+            try
+            {
+                await task;
+            }
+            finally
+            {
+                allTaskes.Remove(task);
+                if (TaskRemoved!=null)
+                {
+                    TaskRemoved(this,null);
                 }
             }
         }
+        public event EventHandler TaskAdded;
+        public event EventHandler TaskRemoved;
+#endregion TaskManeger
+
 
         List<Action> restoreActions= new List<Action>();
         

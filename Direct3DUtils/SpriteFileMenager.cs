@@ -115,6 +115,9 @@ namespace Direct3DUtils
             var rootThis = await GetThisRoot();
             var typeFolder = await rootThis.CreateFolderAsync(type.ToString(), CreationCollisionOption.OpenIfExists);
 
+            
+            if (folders.TryGetValue(type, out res))
+                return res;
             res = new FolderDesc()
             {
                 folder = typeFolder,
