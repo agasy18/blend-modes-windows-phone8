@@ -82,14 +82,11 @@ HRESULT Direct3DInterop::Draw(_In_ ID3D11Device1* device, _In_ ID3D11DeviceConte
 	return S_OK;
 }
 
-void Direct3DInterop::SpriteTranslate(int id,float translateX, float translateY, float translateZ,float Rotation,float scaleX,float scaleY)
+void Direct3DInterop::SpriteSetTransform(int id,float translateX, float translateY, float translateZ,float Rotation,float scaleX,float scaleY)
 {
-	m_renderer->SpriteTranslate(id,translateX,translateY,translateZ,Rotation,scaleX,scaleY);
+	m_renderer->SpriteSetTransform(id,translateX,translateY,translateZ,Rotation,scaleX,scaleY);
 }
-void Direct3DInterop::SizeChanged(int id,float width, float heght)
-{
-	m_renderer->SizeChanged(id,width,heght);
-}
+
 void Direct3DInterop::SpriteCreateMainTexture(int id, int  *  buffer,int width,int height)
 {
 	m_renderer->SpriteCreateMainTexture(id,buffer,width,height);

@@ -89,10 +89,10 @@ namespace Direct3DUtilsTest
 
         async Task<WriteableBitmap> ChoosePhotoAndInteropIsLoaded()
         {
-            var t = ChoosePhoto();
+            var t =await ChoosePhoto();
             await this.InvokeAsync();
             await dxManager.AllTaskes;
-            return await t;
+            return t;
         }
 
         private async void ApplicationBarIconButton_Add(object sender, EventArgs e)
@@ -166,22 +166,30 @@ namespace Direct3DUtilsTest
             SaveToMediaLibrary(GetBitmap());
         }
 
-        private void ApplicationBarMenuItem_Texture(object sender, EventArgs e)
+        private async void ApplicationBarMenuItem_Texture(object sender, EventArgs e)
         {
             if (!IsSpriteSelected)
             {
                 return;
             }
 
-            switch ((sender as ApplicationBarMenuItem).Text)
-	        {
-                case "main texture":
-                    break;
-                case "blend texture":
-                    break;
-                case "mask texture":
-                    break;
-	        }
+            var img = await ChoosePhotoAndInteropIsLoaded();
+
+            if (img!=null)
+            {
+                switch ((sender as ApplicationBarMenuItem).Text)
+                {
+                    case "main texture":
+                        CurrentSprite.SetMainTexture(img);
+                        break;
+                    case "blend texture":
+                        CurrentSprite.SetBlendTexture(img);
+                        break;
+                    case "mask texture":
+                        CurrentSprite.SetMaskTexture(img);
+                        break;
+                }   
+            }
         }
 
         private void ApplicationBarMenuItem_BlendMode(object sender, EventArgs e)

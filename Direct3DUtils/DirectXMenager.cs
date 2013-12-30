@@ -214,6 +214,7 @@ namespace Direct3DUtils
         StorageFolder localFolder;
         public async Task<StorageFolder> GetRootStorage()
         {
+            
             if (!EnableRestoring)
                 return null;
             if (localFolder != null)

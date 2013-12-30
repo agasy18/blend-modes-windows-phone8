@@ -81,8 +81,7 @@ private:
 public:
 	int SpriteCreate(void);
 	void SpriteDelete(int id);
-	void SpriteTranslate(int id,float translateX, float translateY, float translateZ,float Rotation,float scaleX,float scaleY);
-	void SizeChanged(int id,float width, float heght);
+	void SpriteSetTransform(int id,float translateX, float translateY, float translateZ,float Rotation,float scaleX,float scaleY);
 	void SpriteCreateMainTexture(int id, int  *  buffer,int width,int height);
 	void SpriteCreateBlendTexture( int id, int * buffer, int width, int height );
 	void SpriteCreateMaskTexture( int id, int * buffer, int width, int height );	

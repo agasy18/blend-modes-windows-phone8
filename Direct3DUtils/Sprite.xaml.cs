@@ -192,7 +192,7 @@ namespace Direct3DUtils
             var p = gt.Transform(new Point(ActualWidth / 2, ActualHeight / 2));
             //var px = gt.Transform(new Point(ActualWidth, ActualHeight / 2));getlenqht(px, p)
             //var py = gt.Transform(new Point(ActualWidth / 2, ActualHeight));getlenqht(py, p)
-            m_d3dInterop.SpriteTranslate(id, (float)p.X, (float)p.Y, Canvas.GetZIndex(this), (float)CT.Rotation, (float)(CT.ScaleX * Width), (float)(CT.ScaleY * Height));
+            m_d3dInterop.SpriteSetTransform(id, (float)p.X, (float)p.Y, Canvas.GetZIndex(this), (float)CT.Rotation, (float)(CT.ScaleX * Width), (float)(CT.ScaleY * Height));
         }
         double getlenqht(Point p1, Point p2)
         {

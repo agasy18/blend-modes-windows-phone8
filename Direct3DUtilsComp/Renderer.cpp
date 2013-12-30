@@ -511,7 +511,7 @@ void Renderer::BringToFront(int id)
 	spriteVector.push_back(sp);
 }
 
-void Renderer::SpriteTranslate(int id,float translateX=0, float translateY=0, float translateZ=0,float Rotation=0,float scaleX=1,float scaleY=1)
+void Renderer::SpriteSetTransform(int id,float translateX=0, float translateY=0, float translateZ=0,float Rotation=0,float scaleX=1,float scaleY=1)
 {
 
 	float x=m_windowBounds.Width/2;
@@ -524,10 +524,7 @@ void Renderer::SpriteTranslate(int id,float translateX=0, float translateY=0, fl
 
 
 }
-void Renderer::SizeChanged(int id,float width, float heght)
-{
-	auto sp= SP(id);
-}
+
 
 
 void Renderer::SprieSetBlendMode(int id, int blend)
