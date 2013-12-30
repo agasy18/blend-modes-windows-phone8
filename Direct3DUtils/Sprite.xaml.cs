@@ -57,9 +57,8 @@ namespace Direct3DUtils
     public enum FillMode
     {
         None = -1,
-        Fill = 0,
+        Foreground = 0,
         Background = 1
-
     }
 
     public partial class Sprite : UserControl, IDisposable
@@ -68,6 +67,9 @@ namespace Direct3DUtils
 
         Rectangle re = new Rectangle() { Fill = new SolidColorBrush(Colors.Transparent) };
         float alpha;
+        /// <summary>
+        /// value mast be 0.0-1.0
+        /// </summary>
         public float Alpha
         {
             set { m_d3dInterop.SetAlpha(id, alpha = value); }
@@ -117,7 +119,7 @@ namespace Direct3DUtils
             id = m_d3dInterop.SpriteCreate();
             Blendmode = BlendMode.Normal;
             //Tigran
-            Fillmode = FillMode.None;
+            FillMode = FillMode.None;
             
             //
             InitializeComponent();
@@ -261,7 +263,7 @@ namespace Direct3DUtils
             }
         }
         private FillMode fillmode;
-        public FillMode Fillmode
+        public FillMode FillMode
         {
             get { return fillmode; }
             set
@@ -270,15 +272,15 @@ namespace Direct3DUtils
                 m_d3dInterop.SpriteSetFillMode(id, (int)fillmode);
             }
         }
-        private Color colorFill;
-        public Color ColorFill
+        private Color fillColor;
+        public Color FillColor
         {
-            get { return colorFill; }
+            get { return fillColor; }
             set
             {
-                colorFill = value;
+                fillColor = value;
 
-                m_d3dInterop.SetFillColor(id,(float)colorFill.R / 255, (float)colorFill.G / 255, (float)colorFill.B / 255, (float)colorFill.A / 255);
+                m_d3dInterop.SetFillColor(id,(float)fillColor.R / 255, (float)fillColor.G / 255, (float)fillColor.B / 255, (float)fillColor.A / 255);
             }
         }
 

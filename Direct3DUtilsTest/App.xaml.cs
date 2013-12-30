@@ -7,6 +7,7 @@ using System.Windows.Navigation;
 using Microsoft.Phone.Controls;
 using Microsoft.Phone.Shell;
 using Direct3DUtilsTest.Resources;
+using Direct3DUtils;
 
 namespace Direct3DUtilsTest
 {
@@ -94,6 +95,8 @@ namespace Direct3DUtilsTest
         // Code to execute on Unhandled Exceptions
         private void Application_UnhandledException(object sender, ApplicationUnhandledExceptionEventArgs e)
         {
+            e.Handled = true;
+            e.ExceptionObject.Log("Application_UnhandledException");
             if (Debugger.IsAttached)
             {
                 // An unhandled exception has occurred; break into the debugger

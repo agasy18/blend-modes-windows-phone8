@@ -26,6 +26,9 @@ namespace Direct3DUtilsTest
         public MainPage()
         {
             InitializeComponent();
+            deleteButton = ApplicationBar.Buttons[1] as ApplicationBarIconButton;
+            CurrentSprite = null;
+            DialogGrid.SetVisibility(false, false);
         }
 
         int canvasZIndex = 0;
@@ -49,8 +52,18 @@ namespace Direct3DUtilsTest
             return dxManager.SaveToBitmap((int)(s * w), (int)(s * h), 0, 0,(int) w,(int) h);
         }
 
-
-        Sprite CurrentSprite;
+        Sprite currentSprite;
+        Sprite CurrentSprite
+        {
+            set
+            {
+                currentSprite = value;
+                var isE = currentSprite != null;
+                ApplicationBar.IsMenuEnabled = isE;
+                deleteButton.IsEnabled = isE;
+            }
+            get { return currentSprite; }
+        }
 
         Task<WriteableBitmap> ChoosePhoto() 
         {
@@ -84,8 +97,6 @@ namespace Direct3DUtilsTest
 
         private async void ApplicationBarIconButton_Add(object sender, EventArgs e)
         {
-
-
            var img = await ChoosePhotoAndInteropIsLoaded();
            if (img!=null)
            {
@@ -97,15 +108,16 @@ namespace Direct3DUtilsTest
                sprite.Loaded+=(s,es)=>sprite.SetMainTexture(img);
                ApplyAspectRatio(sprite, img);
                Canvas.SetZIndex(sprite, ++canvasZIndex);
-               DrawingSurfaceBackground.Children.Add(sprite);
+               LayoutRoot.Children.Add(sprite);
                sprite.Tap += CurrentSprite_Tap;
                CurrentSprite = sprite;
+               CurrentSprite.Tag = BlendModeChooser.ResetParams.ResetParamsZiro();
            }
         }
 
         private void ApplyAspectRatio(Sprite CurrentSprite, WriteableBitmap img)
         {
-            const float spriteSize = 200;
+            const float spriteSize = 400;
             float s = Math.Min(spriteSize / img.PixelWidth,spriteSize / img.PixelHeight);
             CurrentSprite.Width = s * img.PixelWidth;
             CurrentSprite.Height = s * img.PixelHeight;
@@ -117,10 +129,8 @@ namespace Direct3DUtilsTest
             {
                 return;
             }
-            if (CurrentSprite != null)
-            {
-                CurrentSprite.Activate = false;
-            }
+            e.Handled = true;
+            DeselectSprite();
             CurrentSprite = sender as Sprite;
             CurrentSprite.Activate = true;
             Canvas.SetZIndex(CurrentSprite, ++canvasZIndex);
@@ -129,8 +139,27 @@ namespace Direct3DUtilsTest
 
         private void ApplicationBarIconButton_Delete(object sender, EventArgs e)
         {
-           
+            HideBlendMenu();
+            dxManager.DeletSprite(CurrentSprite);
+            LayoutRoot.Children.Remove(CurrentSprite);
+            DeselectSprite();
         }
+
+        private void HideBlendMenu()
+        {
+            if (DialogGrid.Visibility == System.Windows.Visibility.Visible)
+                DialogGrid.SetVisibility(false, true);
+        }
+        private void ShowBlendMenu(BlendModeChooser.ResetParams param)
+        {
+            if (DialogGrid.Visibility == System.Windows.Visibility.Collapsed)
+            {
+                DialogGrid.SetVisibility(true, true);
+                blendChooser.CurrentParrams = param;
+            }
+        }
+
+        bool IsSpriteSelected { get { return CurrentSprite != null; } }
 
         private void ApplicationBarIconButton_Save(object sender, EventArgs e)
         {
@@ -139,6 +168,11 @@ namespace Direct3DUtilsTest
 
         private void ApplicationBarMenuItem_Texture(object sender, EventArgs e)
         {
+            if (!IsSpriteSelected)
+            {
+                return;
+            }
+
             switch ((sender as ApplicationBarMenuItem).Text)
 	        {
                 case "main texture":
@@ -152,22 +186,81 @@ namespace Direct3DUtilsTest
 
         private void ApplicationBarMenuItem_BlendMode(object sender, EventArgs e)
         {
-            
+            if (IsSpriteSelected)
+            {
+                ShowBlendMenu((BlendModeChooser.ResetParams)CurrentSprite.Tag);
+            }
         }
 
-        private void ApplicationBarMenuItem_Color(object sender, EventArgs e)
+        protected override void OnBackKeyPress(System.ComponentModel.CancelEventArgs e)
         {
-
+            base.OnBackKeyPress(e);
+            if (DialogGrid.Visibility == System.Windows.Visibility.Visible)
+            {
+                e.Cancel = true;
+                HideBlendMenu();
+            }
         }
 
         private void LayoutRoot_Tap_1(object sender, System.Windows.Input.GestureEventArgs e)
         {
+            if (e.Handled)
+            {
+                return;
+            }
+            e.Handled = true;
+            DeselectSprite();
+        }
 
+        private void DeselectSprite()
+        {
+            if (IsSpriteSelected)
+            {
+                CurrentSprite.Activate = false;
+                CurrentSprite = null;
+            }
         }
 
         private void DrawingSurfaceBackground_Loaded_1(object sender, RoutedEventArgs e)
         {
             dxManager.Load(DrawingSurfaceBackground);
         }
+
+        private void blendChooser_Selected(object sender, BlendMode e)
+        {
+            if (IsSpriteSelected)
+            {
+                CurrentSprite.Tag = blendChooser.CurrentParrams;
+                CurrentSprite.Blendmode = e;
+            }
+        }
+
+        private void blendChooser_SelectedColor(object sender, Color e)
+        {
+            if (IsSpriteSelected)
+            {
+                CurrentSprite.Tag = blendChooser.CurrentParrams;
+                CurrentSprite.FillColor = e;
+            }
+        }
+
+        private void blendChooser_SelectedFillMode(object sender, FillMode e)
+        {
+            if (IsSpriteSelected)
+            {
+                CurrentSprite.Tag = blendChooser.CurrentParrams;
+                CurrentSprite.FillMode = e;
+            }
+        }
+
+        private void blendChooser_SelectedSpriteAlpha(object sender, double e)
+        {
+            if (IsSpriteSelected)
+            {
+                CurrentSprite.Tag = blendChooser.CurrentParrams;
+                CurrentSprite.Alpha = (float)e / 255;
+            }
+        }
+
     }
 }

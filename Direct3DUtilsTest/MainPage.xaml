@@ -16,25 +16,28 @@
     <phone:PhoneApplicationPage.ApplicationBar>
         <shell:ApplicationBar Mode="Default"  Opacity="50" IsVisible="True" IsMenuEnabled="True">
             <shell:ApplicationBar.MenuItems>
-                <shell:ApplicationBarMenuItem Text="blend Mode" IsEnabled="True" Click="ApplicationBarMenuItem_BlendMode"/>
-                <shell:ApplicationBarMenuItem Text="Color" IsEnabled="True" Click="ApplicationBarMenuItem_Color"/>
+                <shell:ApplicationBarMenuItem Text="blend options" IsEnabled="True" Click="ApplicationBarMenuItem_BlendMode"/>
                 <shell:ApplicationBarMenuItem Text="main texture" IsEnabled="True" Click="ApplicationBarMenuItem_Texture"/>
                 <shell:ApplicationBarMenuItem Text="blend texture" IsEnabled="True" Click="ApplicationBarMenuItem_Texture"/>
                 <shell:ApplicationBarMenuItem Text="mask texture" IsEnabled="True" Click="ApplicationBarMenuItem_Texture"/>
             </shell:ApplicationBar.MenuItems>
             <shell:ApplicationBarIconButton IconUri="/Assets/AppBar/add.png" Text="add" Click="ApplicationBarIconButton_Add"/>
-            <shell:ApplicationBarIconButton IconUri="/Assets/AppBar/delete.png" Text="delete" Click="ApplicationBarIconButton_Delete"/>
+            <shell:ApplicationBarIconButton x:Name="deleteButton" IconUri="/Assets/AppBar/delete.png" Text="delete" Click="ApplicationBarIconButton_Delete"/>
             <shell:ApplicationBarIconButton IconUri="/Assets/AppBar/save.png" Text="save" Click="ApplicationBarIconButton_Save" />
         </shell:ApplicationBar>
     </phone:PhoneApplicationPage.ApplicationBar>
 
-    <!--LayoutRoot is the root grid where all page content is placed--><DrawingSurfaceBackgroundGrid x:Name="DrawingSurfaceBackground"   Loaded="DrawingSurfaceBackground_Loaded_1" Tap="LayoutRoot_Tap_1">
-    <Grid x:Name="LayoutRoot">
-           
+    <!--LayoutRoot is the root grid where all page content is placed-->
+    <DrawingSurfaceBackgroundGrid x:Name="DrawingSurfaceBackground"   Loaded="DrawingSurfaceBackground_Loaded_1" Tap="LayoutRoot_Tap_1">
+        <Grid x:Name="LayoutRoot" Tap="LayoutRoot_Tap_1">
 
-            <local:BlendModeChooser x:Name="blendChooser" HorizontalAlignment="Left" Height="409" VerticalAlignment="Top" Width="256"/>
-        
 
-    </Grid>
-</DrawingSurfaceBackgroundGrid>
+        </Grid>
+        <Grid x:Name="DialogGrid" >
+
+
+            <local:BlendModeChooser x:Name="blendChooser" HorizontalAlignment="Left" VerticalAlignment="Top" SelectedBlendMode="blendChooser_Selected" SelectedColor="blendChooser_SelectedColor" SelectedFillMode="blendChooser_SelectedFillMode" SelectedSpriteAlpha="blendChooser_SelectedSpriteAlpha"/>
+
+        </Grid>
+    </DrawingSurfaceBackgroundGrid>
 </phone:PhoneApplicationPage>

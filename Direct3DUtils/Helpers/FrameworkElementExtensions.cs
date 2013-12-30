@@ -147,6 +147,7 @@ namespace Direct3DUtils
         public static Task SetVisibility(this FrameworkElement element, bool visibility, bool animated)
         {
             var taskSource = new TaskCompletionSource<object>();
+            element.Visibility = visibility ? Visibility.Collapsed : Visibility.Visible;
             try
             {
                 if (animated)
@@ -199,9 +200,13 @@ namespace Direct3DUtils
                     return act();
                 }
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 taskSource.SetException(e);
+            }
+            finally
+            {
+                element.Visibility = visibility ? Visibility.Visible : Visibility.Collapsed; 
             }
             return taskSource.Task;
         }
