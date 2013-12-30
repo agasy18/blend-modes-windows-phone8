@@ -41,7 +41,7 @@ HRESULT Direct3DInterop::Connect(_In_ IDrawingSurfaceRuntimeHostNative* host, _I
 {
 	if (m_renderer==nullptr)
 	{
-		m_renderer = ref new CubeRenderer();
+		m_renderer = ref new Renderer();
 	}
 	m_renderer->Initialize(device);
 	m_renderer->UpdateForWindowSizeChange(WindowBounds.Width, WindowBounds.Height);

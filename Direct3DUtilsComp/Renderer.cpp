@@ -1,5 +1,5 @@
 ﻿#include "pch.h"
-#include "CubeRenderer.h"
+#include "Renderer.h"
 #include <mutex>
 #include <stdio.h>
 #include <wrappers\corewrappers.h>
@@ -21,7 +21,7 @@ static const Vertex spriteVertexes[] =
 	Vertex(spriteSize, -spriteSize, 0, 1,1)
 };
 
-CubeRenderer::CubeRenderer() 
+Renderer::Renderer() 
 {
 	LogFormat("Loading Renderer");
 }
@@ -30,7 +30,7 @@ CubeRenderer::CubeRenderer()
 
 
 
-void CubeRenderer::CreateDeviceResources()
+void Renderer::CreateDeviceResources()
 {
 	Direct3DBase::CreateDeviceResources();
 	ConfigBlendModes();
@@ -104,7 +104,7 @@ void CubeRenderer::CreateDeviceResources()
 	});
 }
 
-void CubeRenderer::CreateWindowSizeDependentResources()
+void Renderer::CreateWindowSizeDependentResources()
 {
 	Direct3DBase::CreateWindowSizeDependentResources();
 	CD3D11_TEXTURE2D_DESC blendDestTextureDesc(
@@ -149,14 +149,14 @@ void CubeRenderer::CreateWindowSizeDependentResources()
 	CreateViewport();
 }
 
-void CubeRenderer::Update(float timeTotal, float timeDelta)
+void Renderer::Update(float timeTotal, float timeDelta)
 {
 	
 }
 
 
 
-void CubeRenderer::Render()
+void Renderer::Render()
 {
 	const float midnightBlue[] = { 0, 0, 0, 1.000f };
 	const float clearColor[] = { 0.0f, 0.0f, 0.0f, 0.000f };
@@ -227,7 +227,7 @@ void CubeRenderer::Render()
 	
 }
 
-ID3D11BlendState * CubeRenderer::GetNativeBlendFunc(BlendMode blendmode)
+ID3D11BlendState * Renderer::GetNativeBlendFunc(BlendMode blendmode)
 {
 	switch (blendmode)
 	{
@@ -241,7 +241,7 @@ ID3D11BlendState * CubeRenderer::GetNativeBlendFunc(BlendMode blendmode)
 	}
 };
 
-void CubeRenderer::DrawSprite(Sprite * iter,float & zIndex)
+void Renderer::DrawSprite(Sprite * iter,float & zIndex)
 {
 	__declspec(align(16)) auto modelMatrix=iter->modelMatrix;
 	__declspec(align(16)) auto modelMatrixT= XMMatrixTranspose(XMMatrixMultiply(modelMatrix,XMMatrixTranslation(0.0f,0.0f,zIndex)));
@@ -342,7 +342,7 @@ void CubeRenderer::DrawSprite(Sprite * iter,float & zIndex)
 	m_d3dContext->Draw(4,0);
 }
 
-void CubeRenderer::CreateSampler()
+void Renderer::CreateSampler()
 {
 		D3D11_SAMPLER_DESC sampDesc;
 		ZeroMemory( &sampDesc, sizeof(sampDesc) );
@@ -356,7 +356,7 @@ void CubeRenderer::CreateSampler()
 		m_d3dDevice->CreateSamplerState( &sampDesc, &CubesTexSamplerState);
 }
 
-void CubeRenderer::CreateViewport()
+void Renderer::CreateViewport()
 {
 	XMVECTOR eye = XMVectorSet(0, 0, 100, 0);
 	XMVECTOR at = XMVectorSet(0, 0, 0, 0);
@@ -366,7 +366,7 @@ void CubeRenderer::CreateViewport()
 	//XMStoreFloat4x4(&m_VSconstantBufferData.model, XMMatrixTranspose(XMMatrixIdentity()));
 }
 
-void CubeRenderer::ConfigBlendModes()
+void Renderer::ConfigBlendModes()
 {
 
 	//OutputPixel = ( SourceColor.rgba * SrcBlend ) __BlendOp__ ( DestColor.rgba * DestBlend )
@@ -485,7 +485,7 @@ void CubeRenderer::ConfigBlendModes()
 	
 }
 
-void CubeRenderer::CreateVertexBuffer()
+void Renderer::CreateVertexBuffer()
 {
 
 	D3D11_SUBRESOURCE_DATA vertexBufferData = {0};
@@ -505,19 +505,19 @@ void CubeRenderer::CreateVertexBuffer()
 #pragma  region Sprite
 
 
-void CubeRenderer::SetAlpha(int id,float value)
+void Renderer::SetAlpha(int id,float value)
 {
 	auto sp =SP(id);
 	sp->alpha=value;
 }
-void CubeRenderer::BringToFront(int id)
+void Renderer::BringToFront(int id)
 {
 	auto sp =SP(id);
 	spriteVector.erase(std::find(spriteVector.begin(),spriteVector.end(),sp));
 	spriteVector.push_back(sp);
 }
 
-void CubeRenderer::SpriteTranslate(int id,float translateX=0, float translateY=0, float translateZ=0,float Rotation=0,float scaleX=1,float scaleY=1)
+void Renderer::SpriteTranslate(int id,float translateX=0, float translateY=0, float translateZ=0,float Rotation=0,float scaleX=1,float scaleY=1)
 {
 
 	float x=m_windowBounds.Width/2;
@@ -530,17 +530,17 @@ void CubeRenderer::SpriteTranslate(int id,float translateX=0, float translateY=0
 
 
 }
-void CubeRenderer::SizeChanged(int id,float width, float heght)
+void Renderer::SizeChanged(int id,float width, float heght)
 {
 	auto sp= SP(id);
 }
 
 
-void CubeRenderer::SprieSetBlendMode(int id, int blend)
+void Renderer::SprieSetBlendMode(int id, int blend)
 {
 	SP(id)->blendMode=blend;
 }
-void CubeRenderer::SpriteSetFillMode(int id, int blend)
+void Renderer::SpriteSetFillMode(int id, int blend)
 {
 	SP(id)->fillMode = blend;
 }
@@ -548,7 +548,7 @@ void CubeRenderer::SpriteSetFillMode(int id, int blend)
 
 
 
-DirectX::XMFLOAT4 CubeRenderer::SpriteGetRect(Sprite * sprite)
+DirectX::XMFLOAT4 Renderer::SpriteGetRect(Sprite * sprite)
 {
 	//LogFormat("SpriteRect");
 	XMFLOAT4 rect(0,0,-1,0);
@@ -569,7 +569,7 @@ DirectX::XMFLOAT4 CubeRenderer::SpriteGetRect(Sprite * sprite)
 	return rect;
 }
 
-void CubeRenderer::InsertPointToRect(DirectX::XMFLOAT4 * point,DirectX::XMFLOAT4 * rect)
+void Renderer::InsertPointToRect(DirectX::XMFLOAT4 * point,DirectX::XMFLOAT4 * rect)
 {
 	auto x=rect->x;
 	auto y=rect->y;
@@ -583,7 +583,7 @@ void CubeRenderer::InsertPointToRect(DirectX::XMFLOAT4 * point,DirectX::XMFLOAT4
 	
 }
 
-DirectX::XMFLOAT4 CubeRenderer::SpriteCovertPointToWorld(Sprite * sprite,XMFLOAT4 * point)
+DirectX::XMFLOAT4 Renderer::SpriteCovertPointToWorld(Sprite * sprite,XMFLOAT4 * point)
 {
 	XMVECTOR vector=DirectX::XMLoadFloat4(point);
 	vector =  DirectX::XMVector4Transform(vector,sprite->modelMatrix);
@@ -595,7 +595,7 @@ DirectX::XMFLOAT4 CubeRenderer::SpriteCovertPointToWorld(Sprite * sprite,XMFLOAT
 }
 
 
-void CubeRenderer::SpriteGetRect(int id, int * x,int * y, int * w,int *h)
+void Renderer::SpriteGetRect(int id, int * x,int * y, int * w,int *h)
 {
 	auto a = SpriteGetRect(SP(id));
 	*x=a.x;
@@ -605,14 +605,14 @@ void CubeRenderer::SpriteGetRect(int id, int * x,int * y, int * w,int *h)
 }
 
 
-int CubeRenderer::SpriteCreate(void)
+int Renderer::SpriteCreate(void)
 {
 	Sprite * sp= new Sprite();	
 	spriteVector.push_back(sp);
 	return (int)sp;
 }
 
-void CubeRenderer::SpriteDelete(int id)
+void Renderer::SpriteDelete(int id)
 {
 	delete SP(id);
 	spriteVector.erase(std::find(spriteVector.begin(),spriteVector.end(),SP(id)));
@@ -620,21 +620,21 @@ void CubeRenderer::SpriteDelete(int id)
 
 
 
-void CubeRenderer::SpriteCreateMainTexture(int id, int  *  buffer,int width,int height)
+void Renderer::SpriteCreateMainTexture(int id, int  *  buffer,int width,int height)
 {
 	auto sp= SP(id);
 	sp->mainTextureBmpInfo.Connect(m_d3dDevice.Get(),buffer,width,height);
 }
 
 
-void CubeRenderer::SpriteCreateBlendTexture( int id, int * buffer, int width, int height )
+void Renderer::SpriteCreateBlendTexture( int id, int * buffer, int width, int height )
 {
 	auto sp=SP(id);
 	sp->blandTextureBmpInfo.Connect(m_d3dDevice.Get(),buffer,width,height);
 }
 
 
-void CubeRenderer::SpriteCreateMaskTexture( int id, int * buffer, int width, int height )
+void Renderer::SpriteCreateMaskTexture( int id, int * buffer, int width, int height )
 {
 	auto sp=SP(id);
 	sp->maskTextureBmpInfo.Connect(m_d3dDevice.Get(),buffer,width,height);
@@ -642,7 +642,7 @@ void CubeRenderer::SpriteCreateMaskTexture( int id, int * buffer, int width, int
 
 
 
-void CubeRenderer::SaveToBitmap( int * bitmap,int x,int y,int width,int height,float sx,float sy )
+void Renderer::SaveToBitmap( int * bitmap,int x,int y,int width,int height,float sx,float sy )
 {
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> target;
 	Microsoft::WRL::ComPtr<ID3D11RenderTargetView> targetView;
@@ -653,7 +653,7 @@ void CubeRenderer::SaveToBitmap( int * bitmap,int x,int y,int width,int height,f
 	SaveTextureToBitmap(m_d3dDevice.Get(),m_d3dContext.Get(),tex.Get(),bitmap,width,height);
 }
 
-CubeRenderer::~CubeRenderer()
+Renderer::~Renderer()
 {
 	for (auto i:spriteVector)
 	{
@@ -662,7 +662,7 @@ CubeRenderer::~CubeRenderer()
 	spriteVector.clear();
 }
 
-void CubeRenderer::Disconnect()
+void Renderer::Disconnect()
 {
 	for (auto i:spriteVector)
 	{
@@ -675,13 +675,13 @@ void CubeRenderer::Disconnect()
  m_renderTargetSize.Height = -1;
 }
 
-void CubeRenderer::Initialize( _In_ ID3D11Device1* device )
+void Renderer::Initialize( _In_ ID3D11Device1* device )
 {	
 	m_loadingComplete =false;
 	Direct3DBase::Initialize(device);
 }
 //Tigran
-void CubeRenderer::SetFillColor(int id, float red, float green, float blue, float alpha)
+void Renderer::SetFillColor(int id, float red, float green, float blue, float alpha)
 {
 	auto & color = SP(id)->color;
 	color.w = alpha;
@@ -690,7 +690,7 @@ void CubeRenderer::SetFillColor(int id, float red, float green, float blue, floa
 	color.z = blue;
 }
 //
-void CubeRenderer::Disconnect(Sprite * spr)
+void Renderer::Disconnect(Sprite * spr)
 {
 	spr->mainTextureBmpInfo.Disconnect();
 	spr->blandTextureBmpInfo.Disconnect();

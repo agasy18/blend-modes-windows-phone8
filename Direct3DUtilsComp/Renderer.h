@@ -31,10 +31,10 @@ struct Vertex	//Overloaded Vertex Structure
 
 
 // This class renders a simple spinning cube.
-ref class CubeRenderer sealed : public Direct3DBase
+ref class Renderer sealed : public Direct3DBase
 {
 public:
-	CubeRenderer();
+	Renderer();
 
 	// Direct3DBase methods.
 	virtual void CreateDeviceResources() override;
@@ -43,7 +43,7 @@ public:
 	virtual void Render() override;	
 	// Method for updating time-dependent objects.
 	void Update(float timeTotal, float timeDelta);
-  virtual	~CubeRenderer();
+  virtual	~Renderer();
   void Disconnect();
 internal:
 	virtual void Initialize(_In_ ID3D11Device1* device) override;

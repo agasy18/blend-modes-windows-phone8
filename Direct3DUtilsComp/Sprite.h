@@ -63,9 +63,7 @@ public:
 	int blendMode;
 	int drawMode;
 	float alpha;
-	//Tigran
 	int fillMode;
-	//Tigran
 	__declspec(align(16)) DirectX::XMMATRIX modelMatrix;
 	BitmapInfo mainTextureBmpInfo;
 	BitmapInfo blandTextureBmpInfo;
