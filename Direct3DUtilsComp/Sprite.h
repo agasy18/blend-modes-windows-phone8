@@ -14,56 +14,58 @@ class BitmapInfo
     virtual	~BitmapInfo();
 };
 
- enum BlendMode
+ enum class BlendMode
     {
-        BlendModeNormal = 1,
-        BlendModeMultiply = 2,
-        BlendModeScreen = 3,
-        BlendModeOverlay = 4,
-        BlendModeDarken = 5,
-        BlendModeLighten = 6,
-        BlendModeColorDodge = 7,
-        BlendModeColorBurn = 8,
-        BlendModeSoftLight = 9,
-        BlendModeHardLight = 10,
-        BlendModeDifference = 11,
-        BlendModeExclusion = 12,
-        /*BlendModeHue,
-        BlendModeSaturation,
-        BlendModeColor,
-        BlendModeLuminosity,*/
-        BlendModeClear = 17,
-        BlendModeCopy = 18,
-        BlendModeSourceIn = 19,
-        BlendModeSourceOut = 20,
-        BlendModeSourceAtop = 21,
-        BlendModeDestinationOver = 22,
-        BlendModeDestinationIn = 23,
-        BlendModeDestinationOut = 24,
-        BlendModeDestinationAtop = 25,
-        BlendModeXOR = 26,
-        BlendModePlusDarker = 27,
-        BlendModePlusLighter = 28,
+		None = 0,
+        Normal = 1,
+        Multiply = 2,
+        Screen = 3,
+        Overlay = 4,
+        Darken = 5,
+        Lighten = 6,
+        ColorDodge = 7,
+        ColorBurn = 8,
+        SoftLight = 9,
+        HardLight = 10,
+        Difference = 11,
+        Exclusion = 12,
+        Clear = 17,
+        Copy = 18,
+        SourceIn = 19,
+        SourceOut = 20,
+        SourceAtop = 21,
+        DestinationOver = 22,
+        DestinationIn = 23,
+        DestinationOut = 24,
+        DestinationAtop = 25,
+        XOR = 26,
+        PlusDarker = 27,
+        PlusLighter = 28,
 		
     };
 
 
- enum SpriteDrawMode
+ enum class SpriteDrawMode
  {	
-	SpriteDrawModeAuto=-1,
-	SpriteDrawModeCopyMainTexture,
-	SpriteDrawModeCopyBlendTexture,
-	SpriteDrawModeBlendMode,	
+	Auto=-1,
+	CopyMainTexture,
+	CopyBlendTexture,
+	BlendMode,	
+ };
+ enum class SpriteFillMode
+ {	
+	 None = -1,
+	 Foreground = 0,
+	 Background = 1
  };
 
- class Sprite 
+ struct  Sprite 
 {	
-public:
 	Sprite();
-	int blendMode;
-	int drawMode;
+	BlendMode blendMode;
+	SpriteDrawMode drawMode;
 	float alpha;
-	int fillMode;
+	SpriteFillMode fillMode;
 	__declspec(align(16)) DirectX::XMMATRIX modelMatrix;
 	BitmapInfo mainTextureBmpInfo;
 	BitmapInfo blandTextureBmpInfo;

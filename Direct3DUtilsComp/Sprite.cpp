@@ -5,9 +5,9 @@ using namespace DirectX;
 Sprite::Sprite()
 {
 	modelMatrix=XMMatrixIdentity();
-	blendMode=BlendModeNormal;
-	drawMode=SpriteDrawModeAuto;
-	fillMode = -1;
+	blendMode=BlendMode::Normal;
+	drawMode=SpriteDrawMode::Auto;
+	fillMode = SpriteFillMode::None;
 	alpha = 1;
 	
 }

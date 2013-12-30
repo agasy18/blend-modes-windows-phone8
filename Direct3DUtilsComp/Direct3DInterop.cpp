@@ -102,7 +102,7 @@ void Direct3DInterop::SpriteCreateMaskTexture(int id, int  *  buffer,int width,i
 {
 	m_renderer->SpriteCreateMaskTexture(id,buffer,width,height);
 }
-void Direct3DInterop::SpriteGetRect(int id, int * x,int * y, int * w,int *h)
+void Direct3DInterop::SpriteGetRect(int id, float * x,float * y, float * w,float *h)
 {
 	m_renderer->SpriteGetRect(id,x,y,w,h);
 }

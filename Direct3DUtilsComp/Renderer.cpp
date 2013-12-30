@@ -231,10 +231,8 @@ ID3D11BlendState * Renderer::GetNativeBlendFunc(BlendMode blendmode)
 {
 	switch (blendmode)
 	{
-	case BlendModeNormal:
+	case BlendMode::Normal:
 		return AlphaBlenFunc.Get();
-	//case BlendModeScreen:
-		//return ScreenBlenFunc.Get();
 	default:
 		return NULL;
 		break;
@@ -248,21 +246,17 @@ void Renderer::DrawSprite(Sprite * iter,float & zIndex)
 	zIndex+=0.01f;
 	XMStoreFloat4x4(&m_VSconstantBufferData.model,modelMatrixT);
 	ID3D11BlendState * dxblendFiunc=AlphaBlenFunc.Get();
-	int desBlendMode=iter->blendMode;
+	auto desBlendMode=iter->blendMode;
 	ID3D11ShaderResourceView* blendTexResView=iter->blandTextureBmpInfo.ResView.Get();	
 	m_VSconstantBufferData.info.x=0;
-	//if ((blendTexResView==NULL)&&(desBlendMode==BlendModeNormal))
-	//{
-	//	desBlendMode=0;
-	//}
-	//else 
+
 		if (blendTexResView==NULL)
 	{		
 		m_VSconstantBufferData.info.x=1;
-		ID3D11BlendState *  ntvblendFinc=  GetNativeBlendFunc((BlendMode) desBlendMode);
+		ID3D11BlendState *  ntvblendFinc=  GetNativeBlendFunc(desBlendMode);
 		if (ntvblendFinc)
 		{
-			desBlendMode=0;
+			desBlendMode=BlendMode::None;
 			dxblendFiunc =ntvblendFinc;
 		}
 		else
@@ -287,40 +281,40 @@ void Renderer::DrawSprite(Sprite * iter,float & zIndex)
 
 	ID3D11ShaderResourceView* shaderResources[]={iter->mainTextureBmpInfo.ResView.Get(),blendTexResView,iter->maskTextureBmpInfo.ResView.Get()};
 	
-	if (iter->drawMode==SpriteDrawMode::SpriteDrawModeCopyMainTexture)
+	if (iter->drawMode==SpriteDrawMode::CopyMainTexture)
 	{
-		m_PSconstantBufferData.blendMode.y=SpriteDrawModeCopyMainTexture;
+		m_PSconstantBufferData.blendMode.y=(int)SpriteDrawMode::CopyMainTexture;
 	}
-	else if(iter->drawMode==SpriteDrawMode::SpriteDrawModeCopyBlendTexture)
+	else if(iter->drawMode==SpriteDrawMode::CopyBlendTexture)
 	{
-		m_PSconstantBufferData.blendMode.y=SpriteDrawModeCopyBlendTexture;
+		m_PSconstantBufferData.blendMode.y=(int)SpriteDrawMode::CopyBlendTexture;
 		shaderResources[0]=0;
 		shaderResources[2]=0;
 		shaderResources[1]=m_blendDestResourceView.Get();
 		m_VSconstantBufferData.info.x=2;
 		dxblendFiunc=NoBlenFunc.Get();
 	}
-	else if(iter->drawMode==SpriteDrawMode::SpriteDrawModeBlendMode )
+	else if(iter->drawMode==SpriteDrawMode::BlendMode )
 	{
-		m_PSconstantBufferData.blendMode.y=SpriteDrawModeBlendMode;
+		m_PSconstantBufferData.blendMode.y=(int)SpriteDrawMode::BlendMode;
 	}
-	else if (iter->drawMode==SpriteDrawMode::SpriteDrawModeAuto)
+	else if (iter->drawMode==SpriteDrawMode::Auto)
 	{
-		if (desBlendMode==0)
+		if (desBlendMode==BlendMode::None)
 		{
-			m_PSconstantBufferData.blendMode.y=SpriteDrawModeCopyMainTexture;
+			m_PSconstantBufferData.blendMode.y=(int)SpriteDrawMode::CopyMainTexture;
 		}
 		else
 		{
-			m_PSconstantBufferData.blendMode.y=SpriteDrawModeBlendMode;
+			m_PSconstantBufferData.blendMode.y=(int)SpriteDrawMode::BlendMode;
 		}
 	}
 	m_PSconstantBufferData.blendMode.z=iter->maskTextureBmpInfo.ResView.Get()!=nullptr;
-	m_PSconstantBufferData.blendMode.w=iter->fillMode;
+	m_PSconstantBufferData.blendMode.w=(int)iter->fillMode;
 	m_PSconstantBufferData.color = iter->color;
 	m_PSconstantBufferData.floatInfo.x=iter->alpha;
 	m_d3dContext->OMSetBlendState(dxblendFiunc, 0, 0xffffffff);	
-	m_PSconstantBufferData.blendMode.x=desBlendMode;
+	m_PSconstantBufferData.blendMode.x=(int)desBlendMode;
 	m_d3dContext->PSSetShaderResources( 0, 3,shaderResources);
 	m_d3dContext->UpdateSubresource(
 		m_VSconstantBuffer.Get(),
@@ -538,11 +532,11 @@ void Renderer::SizeChanged(int id,float width, float heght)
 
 void Renderer::SprieSetBlendMode(int id, int blend)
 {
-	SP(id)->blendMode=blend;
+	SP(id)->blendMode=(BlendMode) blend;
 }
-void Renderer::SpriteSetFillMode(int id, int blend)
+void Renderer::SpriteSetFillMode(int id, int fillMode)
 {
-	SP(id)->fillMode = blend;
+	SP(id)->fillMode =(SpriteFillMode) fillMode;
 }
 
 
@@ -595,7 +589,7 @@ DirectX::XMFLOAT4 Renderer::SpriteCovertPointToWorld(Sprite * sprite,XMFLOAT4 * 
 }
 
 
-void Renderer::SpriteGetRect(int id, int * x,int * y, int * w,int *h)
+void Renderer::SpriteGetRect(int id, float * x,float * y, float * w,float *h)
 {
 	auto a = SpriteGetRect(SP(id));
 	*x=a.x;
@@ -640,8 +634,6 @@ void Renderer::SpriteCreateMaskTexture( int id, int * buffer, int width, int hei
 	sp->maskTextureBmpInfo.Connect(m_d3dDevice.Get(),buffer,width,height);
 }
 
-
-
 void Renderer::SaveToBitmap( int * bitmap,int x,int y,int width,int height,float sx,float sy )
 {
 	Microsoft::WRL::ComPtr<ID3D11Texture2D> target;
@@ -680,7 +672,7 @@ void Renderer::Initialize( _In_ ID3D11Device1* device )
 	m_loadingComplete =false;
 	Direct3DBase::Initialize(device);
 }
-//Tigran
+
 void Renderer::SetFillColor(int id, float red, float green, float blue, float alpha)
 {
 	auto & color = SP(id)->color;
@@ -689,14 +681,10 @@ void Renderer::SetFillColor(int id, float red, float green, float blue, float al
 	color.y = green;
 	color.z = blue;
 }
-//
+
 void Renderer::Disconnect(Sprite * spr)
 {
 	spr->mainTextureBmpInfo.Disconnect();
 	spr->blandTextureBmpInfo.Disconnect();
 	spr->maskTextureBmpInfo.Disconnect();
 }
-
-
-
-

@@ -86,7 +86,7 @@ public:
 	void SpriteCreateMainTexture(int id, int  *  buffer,int width,int height);
 	void SpriteCreateBlendTexture( int id, int * buffer, int width, int height );
 	void SpriteCreateMaskTexture( int id, int * buffer, int width, int height );	
-	void SpriteGetRect(int id, int * x,int * y, int * w,int *h);
+	void SpriteGetRect(int id, float * x,float * y, float * w,float *h);
 	void SprieSetBlendMode(int id, int blend);
 	void SpriteSetFillMode(int id, int blend);
 	void SaveToBitmap(int * bitmap,int x,int y,int width,int height,float sx,float sy);
