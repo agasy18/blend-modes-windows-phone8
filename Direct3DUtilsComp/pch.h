@@ -10,7 +10,6 @@
 #define MAX(a,b) (((a)>(b))?(a):(b))
 #define NORMALIZE(x,a1,a2)(MAX(MIN(x,a1),a2))
 
-//#define  DEBUG
 
 extern char __logbuf[1000];
 extern char __logbufFormat[160];
